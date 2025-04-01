@@ -1,0 +1,97 @@
+#CompareContainer{
+    flex-direction: column;
+}
+#ComparingTextContainer{
+    margin-top: 30px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+#compareMetricText{
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.modelCompare{
+    font-size: 2em;
+    border: 0;
+    background-color: var(--color2);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#chooseModelsContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+}
+#compareTitleContainer{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#compareTitle{
+    font-size: 2em;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--color2);
+}
+#basicComparesonContainer{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+#BarChartComponentContainer{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+}
+#BarChartComponentText{
+    margin-top: 30px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 90%;
+}
+#BarChartComponentText p{
+    margin: 0;
+    font-size: 1.2em;
+}
+#BarChartComponentPlot{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#beforeSelectionContainer p{
+    font-size: 1.2em;
+    margin-top: 80px;
+}
+#compareAlertContainer{}
+
+.alert{
+    font-size: 1.5em !important;    
+    width: 50%;
+    position: fixed;
+    top: 3vh;
+    left: 25%;
+    z-index: 101;
+}
+
+
+.alert .MuiSvgIcon-root {
+    font-size: 1.5em !important;
+}
+

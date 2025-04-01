@@ -1,0 +1,110 @@
+#homeScreen{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color4);
+  color: var(--text-color);
+
+  background: rgba(215,211,191,1);
+  background: -moz-linear-gradient(top, rgba(215,211,191,1) 0%, rgba(215,211,191,1) 40%, rgba(255,255,255,1) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(215,211,191,1)), color-stop(40%, rgba(215,211,191,1)), color-stop(100%, rgba(255,255,255,1)));
+  background: -webkit-linear-gradient(top, rgba(215,211,191,1) 0%, rgba(215,211,191,1) 40%, rgba(255,255,255,1) 100%);
+  background: -o-linear-gradient(top, rgba(215,211,191,1) 0%, rgba(215,211,191,1) 40%, rgba(255,255,255,1) 100%);
+  background: -ms-linear-gradient(top, rgba(215,211,191,1) 0%, rgba(215,211,191,1) 40%, rgba(255,255,255,1) 100%);
+  background: linear-gradient(to bottom, rgba(215,211,191,1) 0%, rgba(215,211,191,1) 40%, rgba(255,255,255,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d7d3bf', endColorstr='#ffffff', GradientType=0 );
+}
+
+#container1{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 60vw;
+}
+#searchBar{
+    background-color: var(--color3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    width: 50%;
+    border-radius: 60px;
+    border: 1px solid var(--color2);
+    -webkit-box-shadow: 5px 10px 20px 0px #2135474b;
+    -moz-box-shadow: 5px 10px 20px 0px #2135474b;
+    box-shadow: 5px 10px 20px 0px #2135474b;
+}
+
+#searchBar input:focus {
+    border: none;
+}
+#searchBar input{
+    width: 100%;
+    height: 100%;
+    border-radius: 1vh;
+    background-color: transparent;
+    border: 0;
+    padding-left: 10px;
+    outline: none;
+}
+#searchBar button{
+    width: 45px;
+    height: 40px;
+    border: 0;
+    background-color: var(--color2);
+    border-radius: 120px;
+    cursor: pointer;
+}
+
+h1{
+    font-size: 5em;
+    margin-bottom: 3vh;
+    text-shadow: 3px 5px 5px rgba(33,53,71,0.6);
+}
+
+.libraryButton{
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--color2);
+    background-color: var(--color3);
+    cursor: pointer;
+}
+
+.libraryButton button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+#homeButtonsContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    margin-top: 2vh;
+    margin-bottom: 18vh;
+}
+
+#websiteDescription{
+    text-align: center;
+}
