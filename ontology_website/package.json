@@ -1,0 +1,53 @@
+{
+  "name": "ontology_website",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@canvasjs/react-charts": "^1.0.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/icons-material": "^6.4.4",
+    "@mui/material": "^6.4.4",
+    "@mui/x-data-grid": "^7.27.3",
+    "@mui/x-data-grid-premium": "^7.27.3",
+    "axios": "^1.7.9",
+    "chart.js": "^4.4.7",
+    "d3": "^7.9.0",
+    "file-saver": "^2.0.5",
+    "plotly.js": "^3.0.1",
+    "plotly.js-dist-min": "^3.0.1",
+    "prism-react-renderer": "^2.4.1",
+    "prop-types": "^15.8.1",
+    "react": "^19.0.0",
+    "react-ace": "^14.0.1",
+    "react-dom": "^19.0.0",
+    "react-plotly.js": "^2.6.0",
+    "react-router-dom": "^7.1.5",
+    "react-syntax-highlighter": "^15.6.1",
+    "styled-components": "^6.1.15"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "vite": "^6.1.0"
+  }
+}

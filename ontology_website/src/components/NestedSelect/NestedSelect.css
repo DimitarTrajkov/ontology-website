@@ -1,0 +1,161 @@
+.multiSelectButton{
+    border: none;
+    text-align: left;
+    background-color: var(--color4);
+    cursor: pointer;
+
+}
+.level0{
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--color1);
+    padding-bottom: 5px;
+    width: calc(100%); 
+}
+
+.open {
+    background-color: var(--color3);
+  }
+  
+.picked {
+    background-color: var(--color2);
+}
+
+.hyperParamName{
+    font-size: 1.3em;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--color2);
+    color: #494F55;
+    width: calc(100% - 20px); 
+}
+.hyperParamVal{
+    font-size: 1em;
+    margin-left: 40px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid var(--color3);
+    color: #666362;
+    width: calc(100% - 40px);
+}
+
+
+.generalAddButton{
+    font-size: 1.1em;
+    border: none;
+    width: 80%;
+    margin-left: 10%;
+    padding: 10px 0 10px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+.enabledAddButton{
+    background-color:#c1d8c37a;
+    color: #41644A;
+}
+.disabledAddButton{
+    background-color:#fdab9e3f;
+    color: #FF8989;
+}
+
+#NestedContainer{
+    display: flex;
+    height: 85%;
+    width: 90vw;
+    gap: 20px;
+    /* background-color: red; */
+}
+ 
+
+#selectedCombinationsContainer{
+    flex: 3;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    overflow-y: scroll;
+    background-color: var(--color4);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--color1);
+    box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.1);
+}
+.chosenCombinationsContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    overflow-y: scroll;
+}
+.combinationBubble{
+    padding: 5px 3px 5px 15px;
+    border-radius: 15;
+    background-color: var(--color3);
+    display: flex;
+    text-align: center;
+    border-radius: 50px;
+}
+.xButton{
+    margin: 0;
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    background-color: var(--color2);
+    border: 1px solid var(--color1);
+}
+.bubbleTextContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bubbleText{
+    margin: 0;
+}
+#xButtonContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#selectMetricForInnerContainer{
+    height: 10%;
+    gap: 10px;
+    text-align: center;
+    height: 8%;
+    padding: 0 10px 0 10px;
+}
+
+#NestedContainerLeft{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color4);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--color1);
+    box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 5px 30px 0px rgba(0, 0, 0, 0.1);
+}
+#multiSelectContainer1{
+    /* height: 40vh; */
+    flex: 3;
+    overflow-y: scroll;
+    height: 90%;
+}
+.popUpText{
+    background-color: lightgray;
+    padding: 5px;
+    border: 1px solid var(--color2);
+    border-radius: 10px;
+    max-width: 10vw;
+    text-align: center;
+}
+#multiSelectText{
+    font-size: 1.1em;
+    background-color: var(--color4);
+}

@@ -1,0 +1,24 @@
+1. List:
+    -  datasets/:filter/:ascDsc/:range   DatasetName, DatasetType, DatasetAuthor, DatasetTime
+    - datasets/total
+2. Info
+    -  info/all/:dataset                whole info JSON
+3. Performance
+    - /:dataset/all/:metric         outer fold mesurments for all datasets
+4. Compare
+    - /:dataset/:model              outer fold for model for all metrics for dataset
+    (i would need the names of the metrics here also)
+
+    - /radar/:model                 fit,predict time, avg train performance on the best hyperparameters for each outter fold
+
+
+
+    -  datasets/:filter/:ascDsc/:range
+    - datasets/total
+    -  info/all/:dataset
+    - /:dataset/all/:metric
+    - /:dataset/:model
+    - /radar/:model
+
+
+/api/items?page=2&limit=10&name=John&date_start=2024-10-20&date_end=2024-10-27&sort=date&order=desc

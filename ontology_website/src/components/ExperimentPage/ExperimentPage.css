@@ -1,0 +1,83 @@
+#infoContainer{
+    flex-direction: row;
+}
+
+#leftSideInfoContainer h3{
+    font-size: 2em;
+}
+
+#infoContainer h4{
+    margin: 0;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+}
+.paragraphStyle {
+    max-width: 90%;
+    font-size: 1.2em;
+    color: #503C3C;
+    margin: 0;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+#leftSideInfoContainer{
+    flex: 9;
+    padding: 40px 0 40px 40px;
+}
+#rightSideInfoContainer{
+    flex: 4;
+    padding: 40px 40px 40px 0;
+
+}
+
+#middleInfoContainer{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#breakLine{
+    background-color: var(--color1);
+    width: 4px;
+    height: 90%;
+}
+
+.linksAsRegular{
+    text-decoration: none;
+    color: inherit;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.TitleTextExpiriment{
+    font-size: 40px;
+    margin: 0px 0px 20px 80px;
+    /* margin-top: 40px; */
+    text-shadow: 0px 2px 5px rgba(0,0,0,0.6);
+}
+.FirstItem{
+    margin: 40px 0px 20px 40px;
+}
+.HyperParamTitleTextExpiriment{
+    font-size: 30px;
+    margin: 0;
+    font-weight: bold;
+}
+.HyperParamExpirimentTitleContainer{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0px 0px 20px 80px;
+    text-shadow: 0px 2px 5px rgba(0,0,0,0.6);
+
+}

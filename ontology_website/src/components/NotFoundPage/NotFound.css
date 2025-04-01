@@ -1,0 +1,42 @@
+/* #notFoundMainCointer{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: red;
+    width: 100vw;
+    height: 100vh;
+}
+
+#imageBackgorund{
+    width: 100%;
+    height: 100%;
+} */
+
+
+
+
+#notFoundMainCointer {
+    margin-top: 10vh;
+    width: 100%;
+    height: 100vh; /* Use 100vh to cover the entire viewport */
+    position: absolute; /* Keep relative positioning for the container */
+    top: 0;
+    left: 0;
+    background-color: var(--color1); /* Keep the background color */
+    background-image: url('/images/404_background.png');
+    background-size: cover; /* Ensures the image covers the entire div */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+  }
+  
+  
+#notFoundTextContainer {
+    position: absolute;
+    left: 5vw;
+    top: 20vh;
+    z-index: 2; /* Text is above the image */
+    color: var(--color4);
+  }
+#footerDiv{
+  margin-top: 90vh;
+}

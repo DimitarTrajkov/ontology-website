@@ -1,0 +1,48 @@
+#infoContainer{
+    flex-direction: row;
+}
+
+#leftSideInfoContainer h3{
+    font-size: 2em;
+}
+
+#infoContainer h4{
+    margin: 0;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+}
+.paragraphStyle {
+    max-width: 90%;
+    font-size: 1.2em;
+    color: #503C3C;
+    margin: 0;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+#leftSideInfoContainer{
+    flex: 9;
+    padding: 40px 0 40px 40px;
+}
+#rightSideInfoContainer{
+    flex: 4;
+    padding: 40px 40px 40px 0;
+
+}
+
+#middleInfoContainer{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#breakLine{
+    background-color: var(--color1);
+    width: 4px;
+    height: 90%;
+}
+
+.linksAsRegular{
+    text-decoration: none;
+    color: inherit;
+}

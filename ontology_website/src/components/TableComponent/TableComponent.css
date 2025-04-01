@@ -1,0 +1,24 @@
+#tableHeaderAndButtonsContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#downloadCSVButton{
+    border: 2px solid var(--color1);
+    padding: 10px;
+    font-size: 0.9em;
+    background-color: var(--color2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+#downloadCSVButton p{
+    margin: 0;
+}
+#innerOutterToggleContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
