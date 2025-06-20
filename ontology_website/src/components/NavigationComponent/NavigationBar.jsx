@@ -54,9 +54,9 @@ const NavigationBar = ({ datasetName }) => {
       <NavigationButton to={`/performance/:datasetName`} datasetName={datasetName}>
         Performance
       </NavigationButton>
-      <NavigationButton to={`/code/:datasetName`} datasetName={datasetName}>
+      {/* <NavigationButton to={`/code/:datasetName`} datasetName={datasetName}>
         Code
-      </NavigationButton>
+      </NavigationButton> */}
       <NavigationButton to={`/compare_dataset/:datasetName`} datasetName={datasetName}>
         Compare
       </NavigationButton>

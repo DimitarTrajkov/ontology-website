@@ -1,0 +1,73 @@
+{n_iter: 600; alpha_1: 1e-07; alpha_2: 1e-07; lambda_1: 1e-06; lambda_2: 1e-06}
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+# nema pobrz nacin    PODOBRIIIIIIIIIII   inner/getInnerTestAveragePerformanceForAllExperiments
+##########################################################################################################
+##########################################################################################################
+##########################################################################################################
+
+
+SELECT DISTINCT ?model ?hypercomb ?inner_fold ?outter_fold
+    (GROUP_CONCAT(?metrics_value; separator=" , ") AS ?metrics_values)
+    FROM <http://localhost:8890/test03>
+    WHERE {
+    ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+    FILTER (regex(?evaluationMeasure_label, "${dataset}")
+        && !regex(?evaluationMeasure_label, "avg")
+        && regex(?evaluationMeasure_label, "inner")
+        && regex(?evaluationMeasure_label, "_test_evaluation_measure"))
+    BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "${dataset}_"), "_") AS ?model)
+    BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, CONCAT("${dataset}_", ?model, "_")), "_outter") AS ?hypercomb)
+    BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_test_evaluation_measure") AS ?metrics_tmp)
+    BIND(STRAFTER(?metrics_tmp, "_") AS ?metrics)
+    BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "outter_"), "_") AS ?outter_fold)
+    BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_") AS ?inner_fold)
+    ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
+    BIND(CONCAT(?metrics, ": ", STR(?value)) AS ?metrics_value)
+    }
+    GROUP BY ?model ?hypercomb ?inner_fold ?outter_fold
+
+
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX bfo: <http://purl.obolibrary.org/obo/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?model (GROUP_CONCAT(?metrics_value_per_fold; separator=" , ") AS ?metrics) ?hypercomb
+WHERE {
+  {
+    SELECT ?model ?hypercomb (CONCAT(?outer_fold_str, "= ", GROUP_CONCAT(?metric_value; separator=" , ")) AS ?metrics_value_per_fold)
+    WHERE {
+      ?ten_ncv_eval_wf a ontoexp:ontoexp_0005 ;
+                       rdfs:label ?ten_ncv_eval_wf_label .
+      FILTER(STRSTARTS(?ten_ncv_eval_wf_label, "Stockport Local Health Characteristics_"))
+      
+      BIND(STRBEFORE(STRAFTER(?ten_ncv_eval_wf_label, "Stockport Local Health Characteristics_"), "_10_fold_nested_cross_validation_evaluation_workflow_execution") AS ?model)
+
+      ?ten_ncv_eval_wf bfo:BFO_0000051 ?per_fold .
+      ?per_fold a ontoexp:ontoexp_0006 ;
+                bfo:BFO_0000051 ?three_cv_eval_wf .
+
+      ?three_cv_eval_wf bfo:BFO_0000051 ?eval_calc .
+
+      ?eval_calc rdfs:label ?eval_calc_label ;
+                 ontoexp:ontoexp_0217 ?hypercomb ;
+                 bfo:OBI_0000299 ?metric .
+
+    BIND(STRBEFORE(STRAFTER(?eval_calc_label, "_outer_"), "_3_fold_avg_test_evaluation_measure_calculation") AS ?outer_fold_str)
+
+
+      ?metric a ?metric_class ;
+              <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
+
+      ?metric_class rdfs:label ?metric_class_label .
+      BIND(CONCAT(?metric_class_label, ": ", ?value) AS ?metric_value)
+    }
+    GROUP BY ?model ?hypercomb ?outer_fold_str
+    ORDER BY xsd:int(?outer_fold_str)
+    LIMIT 5
+  }
+}
+GROUP BY ?model ?hypercomb

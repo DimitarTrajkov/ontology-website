@@ -1,0 +1,122 @@
+good but i would like the following structure:
+
+
+1. table containing:
+
+"RAW_instances"
+"RAW_features"
+"RAW_number of classes"
+"RAW_proportion duplicate features"
+"RAW_proportion duplicate rows"
+
+"PREPROCESSED_instances"
+"PREPROCESSED_features"
+"PREPROCESSED_number of classes"
+"PREPROCESSED_proportion duplicate features"
+"PREPROCESSED_proportion duplicate rows"
+
+
+
+2. pie chart where binary is inside numerical.
+constant can be writed under the pie chart
+
+"RAW_number numeric features"
+"RAW_number binary features"
+"RAW_number nominal features"
+"RAW_number constant features"
+
+
+3. pie chart for PP. binary is part of numerical
+"PREPROCESSED_number numeric features"
+"PREPROCESSED_number binary features"
+
+
+4. box like plot 
+"RAW_min class frequency"
+"RAW_max class frequency"
+"RAW_std class frequency"
+
+5. box like plot
+"PREPROCESSED_min class frequency"
+"PREPROCESSED_max class frequency"
+"PREPROCESSED_std class frequency"
+
+6. table for both PP and raw
+    "PREPROCESSED_mean feature range"
+    "PREPROCESSED_mean of mean numeric features"
+    "PREPROCESSED_mean of median numeric features"
+    "PREPROCESSED_mean of std numeric features"
+    "PREPROCESSED_mean of var numeric features"
+    "PREPROCESSED_mean of gmean numeric features"
+    "PREPROCESSED_mean of hmean numeric features"
+    "PREPROCESSED_mean of mad numeric features"
+    "PREPROCESSED_mean of tmean numeric features"
+
+    "RAW_mean feature range"
+    "RAW_mean of mean numeric features"
+    "RAW_mean of median numeric features"
+    "RAW_mean of std numeric features"
+    "RAW_mean of var numeric features"
+    "RAW_mean of gmean numeric features"
+    "RAW_mean of hmean numeric features"
+    "RAW_mean of mad numeric features"
+    "RAW_mean of tmean numeric features"
+
+7. box plot for var with num of features for 95% var
+    "PREPROCESSED_PCA var1"
+    "PREPROCESSED_PCA var2"
+    "PREPROCESSED_PCA var3"
+    "PREPROCESSED_N components PCA"
+
+8. table for raw
+    "RAW_proportion missing data"
+    "RAW_proportion features with missing values"
+    "RAW_proportion instances with missing values"
+    "RAW_proportion missing data in target feature"
+
+9.
+"RAW_proportion high kurtosis features"
+"RAW_proportion high skewness features"
+"PREPROCESSED_proportion high kurtosis features"
+"PREPROCESSED_proportion high skewness features"
+
+
+10.
+    "PREPROCESSED_mean target correlation"
+    "PREPROCESSED_std target correlation"
+    "PREPROCESSED_min target correlation"
+    "PREPROCESSED_max target correlation"
+
+
+11.
+    "PREPROCESSED_mean mutual information"
+    "PREPROCESSED_std mutual information"
+    "PREPROCESSED_min mutual information"
+    "PREPROCESSED_max mutual information"
+
+12.
+    "PREPROCESSED_min joint entropy"
+    "PREPROCESSED_max joint entropy"
+    "PREPROCESSED_std joint entropy"
+    "PREPROCESSED_mean joint entropy"
+
+13.
+    "PREPROCESSED_mean feature entropy"
+    "PREPROCESSED_min feature entropy"
+    "PREPROCESSED_max feature entropy"
+    "PREPROCESSED_std feature entropy"
+
+14.
+    "PREPROCESSED_tree depth"
+    "PREPROCESSED_number of leaves"
+    "PREPROCESSED_ratio leaves to instances"
+
+15. bar plot
+    "PREPROCESSED_1NN accuracy"
+    "PREPROCESSED_NaiveBayes accuracy"
+    "PREPROCESSED_DecisionTree accuracy"
+    "PREPROCESSED_linear separability"
+
+16.
+    "PREPROCESSED_proportion features with outliers"
+    "PREPROCESSED_proportion features with normal distribution"

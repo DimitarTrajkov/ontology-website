@@ -80,24 +80,59 @@ const getInnerPerformanceForExperimentAndMetric = async (req, res) => {
     // console.log(experiment)
     // dataset_5_LOGREG_C=0.1_solver=newton-cg_max_iter=100
     try {
+      // const query = `
+      // SELECT  ?value ?outter_fold ?inner_fold
+      // FROM <http://localhost:8890/test03>
+      // WHERE {
+      //     ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+
+      //     FILTER (regex(?evaluationMeasure_label, "${experiment}")
+      //         && !regex(?evaluationMeasure_label, "avg")  
+      //         && regex(?evaluationMeasure_label, "inner")  
+      //         && !regex(?evaluationMeasure_label, "train")  
+      //         && regex(?evaluationMeasure_label, "_${mertric}_") ) 
+
+      //     BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "outter_"), "_") AS ?outter_fold)
+      //     BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_") AS ?inner_fold)
+
+
+      //     ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
+      // }
+      // `;
+
+      // {n_iter: 600; alpha_1: 1e-07; alpha_2: 1e-07; lambda_1: 1e-06; lambda_2: 1e-06}
       const query = `
-      SELECT  ?value ?outter_fold ?inner_fold
-      FROM <http://localhost:8890/test03>
-      WHERE {
-          ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
-
-          FILTER (regex(?evaluationMeasure_label, "${experiment}")
-              && !regex(?evaluationMeasure_label, "avg")  
-              && regex(?evaluationMeasure_label, "inner")  
-              && !regex(?evaluationMeasure_label, "train")  
-              && regex(?evaluationMeasure_label, "_${mertric}_") ) 
-
-          BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "outter_"), "_") AS ?outter_fold)
-          BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_") AS ?inner_fold)
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+        PREFIX bfo: <http://purl.obolibrary.org/obo/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT (xsd:double(?value_inner) AS ?value)  (xsd:int(?outter_fold_str) AS ?outter_fold) ?hyper_params
+        WHERE {
+            ?ten_ncv_eval_wf a ontoexp:ontoexp_0005.
+            ?ten_ncv_eval_wf bfo:BFO_0000051 ?per_fold.
+            ?per_fold a ontoexp:ontoexp_0006.
 
 
-          ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
-      }
+            ?per_fold bfo:BFO_0000051 ?three_cv_eval_wf.
+            ?three_cv_eval_wf a ontoexp:ontoexp_0005.
+
+
+            ?three_cv_eval_wf bfo:BFO_0000051 ?eval_calc.
+            ?eval_calc a ontoexp:ontoexp_0062.
+            ?eval_calc rdfs:label ?eval_calc_label.
+            BIND(STRBEFORE(STRAFTER(?eval_calc_label, "_outer_"), "_3_fold_avg_test_evaluation_measure_calculation") AS ?outter_fold_str)
+            
+            ?eval_calc ontoexp:ontoexp_0217 "${experiment}".
+
+
+            ?eval_calc bfo:OBI_0000299 ?metric.
+            ?metric a ?metric_class.
+            ?metric_class rdfs:label ?metric_class_label.
+            FILTER (STR(?metric_class_label) = "${mertric}")
+
+
+            ?metric <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value_inner.
+        }
       `;
 
       const results = await client.query(query).execute();
@@ -192,28 +227,59 @@ const getInnerPerformanceForExperimentAndMetric = async (req, res) => {
   const getInnerPerformanceForHyperparamSet_AllMetrics = async (req, res) => {
     const {  experiment } = req.params;
     const client = req.virtuosoClient;  
-    // console.log(mertric)
     // dataset_5_LOGREG_C=0.1_solver=newton-cg_max_iter=100
     try {
+      // const query = `
+      // SELECT  ?value ?outter_fold ?inner_fold ?metric
+      // FROM <http://localhost:8890/test03>
+      // WHERE {
+      //     ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+
+      //     FILTER (regex(?evaluationMeasure_label, "${experiment}")
+      //         && !regex(?evaluationMeasure_label, "avg")  
+      //         && regex(?evaluationMeasure_label, "inner")  
+      //         && regex(?evaluationMeasure_label, "test")  ) 
+
+      //     BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "outter_"), "_") AS ?outter_fold)
+      //     BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_") AS ?inner_fold)
+      //     BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_test_evaluation_measure") AS ?inner_metric)
+      //     BIND(STRAFTER(?inner_metric, "_") AS ?metric)
+
+
+      //     ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
+      // }
+      // `;
+      // {n_iter: 600; alpha_1: 1e-07; alpha_2: 1e-07; lambda_1: 1e-06; lambda_2: 1e-06}
       const query = `
-      SELECT  ?value ?outter_fold ?inner_fold ?metric
-      FROM <http://localhost:8890/test03>
-      WHERE {
-          ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
-
-          FILTER (regex(?evaluationMeasure_label, "${experiment}")
-              && !regex(?evaluationMeasure_label, "avg")  
-              && regex(?evaluationMeasure_label, "inner")  
-              && regex(?evaluationMeasure_label, "test")  ) 
-
-          BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "outter_"), "_") AS ?outter_fold)
-          BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_") AS ?inner_fold)
-          BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_test_evaluation_measure") AS ?inner_metric)
-          BIND(STRAFTER(?inner_metric, "_") AS ?metric)
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+        PREFIX bfo: <http://purl.obolibrary.org/obo/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT (xsd:double(?value_inner) AS ?value)  (xsd:int(?outter_fold_str) AS ?outter_fold) (STR(?metric_class_label) as ?metric)
+        WHERE {
+            ?ten_ncv_eval_wf a ontoexp:ontoexp_0005.
+            ?ten_ncv_eval_wf bfo:BFO_0000051 ?per_fold.
+            ?per_fold a ontoexp:ontoexp_0006.
 
 
-          ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
-      }
+            ?per_fold bfo:BFO_0000051 ?three_cv_eval_wf.
+            ?three_cv_eval_wf a ontoexp:ontoexp_0005.
+
+
+            ?three_cv_eval_wf bfo:BFO_0000051 ?eval_calc.
+            ?eval_calc a ontoexp:ontoexp_0062.
+            ?eval_calc rdfs:label ?eval_calc_label.
+            BIND(STRBEFORE(STRAFTER(?eval_calc_label, "_outer_"), "_3_fold_avg_test_evaluation_measure_calculation") AS ?outter_fold_str)
+            
+            ?eval_calc ontoexp:ontoexp_0217 "${experiment}".
+
+
+            ?eval_calc bfo:OBI_0000299 ?metric.
+            ?metric a ?metric_class.
+            ?metric_class rdfs:label ?metric_class_label.
+
+            ?metric <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value_inner.
+        }
       `;
 
       const results = await client.query(query).execute();
@@ -295,23 +361,54 @@ const getInnerPerformanceForExperimentAndMetric = async (req, res) => {
     // console.log(experiment)
     // dataset_5_LOGREG_C=0.1_solver=newton-cg_max_iter=100
     try {
+      // const query = `
+      // SELECT ?metric (AVG(xsd:double(?value)) AS ?average_value)
+      // FROM <http://localhost:8890/test03>
+      // WHERE {
+      //     ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+
+      //     FILTER (regex(?evaluationMeasure_label, "${experiment}")
+      //         && !regex(?evaluationMeasure_label, "avg")  
+      //         && regex(?evaluationMeasure_label, "inner")  
+      //         && regex(?evaluationMeasure_label, "test")  ) 
+
+      //     BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_test_evaluation_measure") AS ?inner_metric)
+      //     BIND(STRAFTER(?inner_metric, "_") AS ?metric)
+
+      //     ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
+      // }
+      // GROUP BY ?metric
+      // `;
+      // {n_iter: 600; alpha_1: 1e-07; alpha_2: 1e-07; lambda_1: 1e-06; lambda_2: 1e-06}
       const query = `
-      SELECT ?metric (AVG(xsd:double(?value)) AS ?average_value)
-      FROM <http://localhost:8890/test03>
-      WHERE {
-          ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+        PREFIX bfo: <http://purl.obolibrary.org/obo/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        SELECT (AVG(xsd:double(?value_inner)) AS ?value) (STR(?metric_class_label) as ?metric)
+        WHERE {
+            ?ten_ncv_eval_wf a ontoexp:ontoexp_0005.
+            ?ten_ncv_eval_wf bfo:BFO_0000051 ?per_fold.
+            ?per_fold a ontoexp:ontoexp_0006.
 
-          FILTER (regex(?evaluationMeasure_label, "${experiment}")
-              && !regex(?evaluationMeasure_label, "avg")  
-              && regex(?evaluationMeasure_label, "inner")  
-              && regex(?evaluationMeasure_label, "test")  ) 
 
-          BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_test_evaluation_measure") AS ?inner_metric)
-          BIND(STRAFTER(?inner_metric, "_") AS ?metric)
+            ?per_fold bfo:BFO_0000051 ?three_cv_eval_wf.
+            ?three_cv_eval_wf a ontoexp:ontoexp_0005.
 
-          ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
-      }
-      GROUP BY ?metric
+
+            ?three_cv_eval_wf bfo:BFO_0000051 ?eval_calc.
+            ?eval_calc a ontoexp:ontoexp_0062.
+            
+            ?eval_calc ontoexp:ontoexp_0217 "${experiment}".
+
+
+            ?eval_calc bfo:OBI_0000299 ?metric.
+            ?metric a ?metric_class.
+            ?metric_class rdfs:label ?metric_class_label.
+
+            ?metric <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value_inner.
+        }
+        GROUP BY ?metric_class_label
       `;
 
       const results = await client.query(query).execute();
@@ -392,25 +489,6 @@ const getInnerPerformanceForExperimentAndMetric = async (req, res) => {
     const { dataset } = req.params;
     const client = req.virtuosoClient;
     try {
-        // RETURNs SAME AS BELLOW BUT EACH METRIC IS A SEPARATE ROW
-        // const query = `
-        //     SELECT DISTINCT ?model ?hypercomb ?metrics ?outter_fold ?inner_fold ?value
-        //     FROM <http://localhost:8890/test03>
-        //     WHERE {
-        //         ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
-        //         FILTER (regex(?evaluationMeasure_label, "${dataset}")
-        //             && !regex(?evaluationMeasure_label, "avg")
-        //             && regex(?evaluationMeasure_label, "inner")
-        //             && regex(?evaluationMeasure_label, "_test_evaluation_measure"))
-        //         BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "${dataset}_"), "_") AS ?model)
-        //         BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, CONCAT("${dataset}_", ?model, "_")), "_outter") AS ?hypercomb)
-        //         BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_test_evaluation_measure") AS ?metrics_tmp)
-        //         BIND(STRAFTER(?metrics_tmp, "_") AS ?metrics)
-        //         BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "outter_"), "_") AS ?outter_fold)
-        //         BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "inner_"), "_") AS ?inner_fold)
-        //         ?evaluationMeasure <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
-        //     }
-        // `;
         const query = `
         SELECT DISTINCT ?model ?hypercomb ?inner_fold ?outter_fold
             (GROUP_CONCAT(?metrics_value; separator=" , ") AS ?metrics_values)
@@ -628,7 +706,7 @@ const getInnerPerformanceForExperimentAndMetric = async (req, res) => {
             GROUP BY ?experiment
             HAVING (COUNT(?metric) = ${metricList.length})
         `;
-        // console.log(query)
+        console.log(query)
         const results = await client.query(query).execute();
         if (!results || !results.results || !results.results.bindings) {
             console.error("Invalid SPARQL response:", results);

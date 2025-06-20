@@ -1,0 +1,237 @@
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+#################  OUTTER FILTER   #################
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX bfo: <http://purl.obolibrary.org/obo/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <https://schema.org/>
+
+SELECT  ?experiment (GROUP_CONCAT(DISTINCT ?measure; separator=", ") AS ?measures)
+FROM <http://localhost:8890/dimitar_test01>
+WHERE {
+    ?pred_m_test_set_eval_calc a ontoexp:ontoexp_0064;
+                                rdfs:label ?pred_m_test_set_eval_calc_label;
+                                bfo:BFO_0000051 ?eval_measure_calc.
+                                
+    ?eval_measure_calc <http://purl.obolibrary.org/obo/OBI_0000308> ?pred_m_ing_eval_calc_imp_instance.
+    ?pred_m_ing_eval_calc_imp_instance <http://purl.obolibrary.org/obo/OBI_0000294> ?eval_measure.
+
+    ?eval_measure a ?eval_measure_class;
+                  <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value.
+                  
+    ?eval_measure_class rdfs:label ?eval_measure_name.
+
+    FILTER (
+        (STR(?eval_measure_name) = "accuracy" && xsd:double(?value) >= -100.0 && xsd:double(?value) <= 1000.0) ||
+        (STR(?eval_measure_name) = "precision" && xsd:double(?value) >= -100.0) ||
+        (STR(?eval_measure_name) = "recall" && xsd:double(?value) >= -100.0 && xsd:double(?value) <= 1000.0)
+    )
+    BIND(STRBEFORE(?pred_m_test_set_eval_calc_label, "_predictive_model_test_set_evaluation_calculation") AS ?experiment)
+    BIND(CONCAT(STR(?eval_measure_name), ":", STR(?value)) AS ?measure)
+}
+GROUP BY ?experiment
+
+
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+#################  INNER FILTER   #################
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+
+
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX bfo: <http://purl.obolibrary.org/obo/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <https://schema.org/>
+
+SELECT  ?experiment (GROUP_CONCAT(DISTINCT ?measure; separator=", ") AS ?measures)
+FROM <http://localhost:8890/dimitar_test01>
+WHERE {
+    ?n_fold_cv_eval_calc a ontoexp:ontoexp_0062;
+                                rdfs:label ?n_fold_cv_eval_calc_label;
+                                <http://purl.obolibrary.org/obo/OBI_0000299> ?eval_measure.
+
+    ?eval_measure a ?eval_measure_class;
+                  <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value.
+                  
+    ?eval_measure_class rdfs:label ?eval_measure_name.
+
+    FILTER (
+        (STR(?eval_measure_name) = "accuracy" && xsd:double(?value) >= -100.0 && xsd:double(?value) <= 1000.0) ||
+        (STR(?eval_measure_name) = "precision" && xsd:double(?value) >= -100.0) ||
+        (STR(?eval_measure_name) = "recall" && xsd:double(?value) >= -100.0 && xsd:double(?value) <= 1000.0)
+    )
+    BIND(STRBEFORE(?n_fold_cv_eval_calc_label, "_3_fold_avg_test_evaluation_measure_calculation") AS ?experiment)
+    BIND(CONCAT(STR(?eval_measure_name), ":", STR(?value)) AS ?measure)
+}
+GROUP BY ?experiment
+
+
+
+
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+#################  INNER FILTER   #################
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+
+
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?experiment (GROUP_CONCAT(DISTINCT ?measure; separator=", ") AS ?measures)
+FROM <http://localhost:8890/dimitar_test01>
+WHERE {
+    {
+        ?n_fold_cv_eval_calc a ontoexp:ontoexp_0062;
+            rdfs:label ?n_fold_cv_eval_calc_label;
+            <http://purl.obolibrary.org/obo/OBI_0000299> ?eval_measure.
+        
+        ?eval_measure a ?eval_measure_class;
+            <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value.
+        
+        ?eval_measure_class rdfs:label ?eval_measure_name.
+
+    FILTER (
+            (?eval_measure_name = "accuracy"@en && xsd:double(?value) >= -100.0 && xsd:double(?value) <= 1000.0) ||
+            (?eval_measure_name = "precision"@en && xsd:double(?value) >= -100.0) ||
+            (?eval_measure_name = "recall"@en && xsd:double(?value) >= -100.0 && xsd:double(?value) <= 1000.0)
+        )
+    }
+    BIND(STRBEFORE(?n_fold_cv_eval_calc_label, "_3_fold_avg_test_evaluation_measure_calculation") AS ?experiment)
+    BIND(CONCAT(STR(?eval_measure_name), ":", STR(?value)) AS ?measure)
+}
+GROUP BY ?experiment
+
+
+
+
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+#################  INNER FILTER   #################
+#################    #############    #################
+#################    #############    #################
+#################    #############    #################
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX bfo: <http://purl.obolibrary.org/obo/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <https://schema.org/>
+
+SELECT 
+    (MAX(IF(?eval_measure_name = "accuracy"@en, xsd:double(?value), xsd:double("-1"))) AS ?accuracy)
+    (MAX(IF(?eval_measure_name = "average precision"@en, xsd:double(?value), xsd:double("-1"))) AS ?average_precision)
+    (MAX(IF(?eval_measure_name = "balanced accuracy"@en, xsd:double(?value), xsd:double("-1"))) AS ?balanced_accuracy)
+    (MAX(IF(?eval_measure_name = "cohen kappa"@en, xsd:double(?value), xsd:double("-1"))) AS ?cohen_kappa)
+    (MAX(IF(?eval_measure_name = "f1"@en, xsd:double(?value), xsd:double("-1"))) AS ?f1)
+    (MAX(IF(?eval_measure_name = "fowlkes mallows"@en, xsd:double(?value), xsd:double("-1"))) AS ?fowlkes_mallows)
+    (MAX(IF(?eval_measure_name = "jaccard"@en, xsd:double(?value), xsd:double("-1"))) AS ?jaccard)
+    (MAX(IF(?eval_measure_name = "matthews corrcoef"@en, xsd:double(?value), xsd:double("-1"))) AS ?matthews_corrcoef)
+    (MAX(IF(?eval_measure_name = "precision"@en, xsd:double(?value), xsd:double("-1"))) AS ?precision)
+    (MAX(IF(?eval_measure_name = "recall"@en, xsd:double(?value), xsd:double("-1"))) AS ?recall)
+    ?model ?hyperparams
+    #(GROUP_CONCAT(DISTINCT ?measure; separator=", ") AS ?measures)
+FROM <http://localhost:8890/dimitar_test01>
+WHERE {
+    # This subquery for pagination remains the same. It efficiently selects a page of experiments.
+    {
+        SELECT ?dataset_name {
+            ?binary_task a ontoexp:OntoDM_208659;
+                        rdfs:label ?task_label.
+            BIND(STRBEFORE(STR(?task_label), "_binary_classification_task") AS ?dataset_name)
+        }
+        LIMIT 1
+        OFFSET 1
+    }
+    {
+        SELECT DISTINCT ?per_fold {
+            ?per_fold a ontoexp:ontoexp_0006;
+                      rdfs:label ?per_fold_labela.
+            
+            FILTER(STRSTARTS(STR(?per_fold_labela), ?dataset_name))
+
+            BIND(STRBEFORE(STRAFTER(STR(?per_fold_labela), ?dataset_name + "_"), "_10_fold_evaluation_workflow_execution") AS ?model)
+        }
+        # The main ORDER BY for pagination should be on a stable, unique value.
+        ORDER BY DESC(?per_fold)
+        LIMIT 5   # <-- _PAGE_SIZE_
+        OFFSET 0  # <-- _OFFSET_
+    }
+
+    # --- Get all the data associated with the paged experiments ---
+    ?per_fold bfo:BFO_0000051 ?inner_cv .
+    ?inner_cv bfo:BFO_0000051 ?n_fold_cv_eval_calc .
+    ?n_fold_cv_eval_calc <http://purl.obolibrary.org/obo/OBI_0000299> ?eval_measure;
+                         rdfs:label ?labela .
+
+    ?eval_measure a ?eval_measure_class;
+                  <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
+    ?eval_measure_class rdfs:label ?eval_measure_name .
+
+    # --- STEP 1: BIND new variables for sorting and display ---
+    BIND(STRBEFORE(STRAFTER(STR(?labela), ?dataset_name + "_"), "_3_fold_avg_test_evaluation_measure_calculation") AS ?experiment)
+    BIND(STRBEFORE(?experiment, "_{") AS ?model)
+    BIND(CONCAT("{", STRBEFORE(STRAFTER(?experiment, "_{"), "}_"), "}") AS ?hyperparams)
+    
+    # BIND(CONCAT(STR(?eval_measure_name), ": ", STR(?value)) AS ?measure)
+}
+GROUP BY ?experiment ?model ?hyperparams
+
+# --- STEP 2: Add HAVING clause for range filtering ---
+# This clause checks if the condition is met for any measure WITHIN the group.
+# To disable filtering, your application should simply not include the HAVING clause.
+HAVING (
+    MAX(IF(?eval_measure_name = "accuracy"@en, xsd:double(?value), 1)) > 0.0 &&
+    MAX(IF(?eval_measure_name = "accuracy"@en, xsd:double(?value), -1)) < 0.99 &&
+
+    MAX(IF(?eval_measure_name = "average precision"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "average precision"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "balanced accuracy"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "balanced accuracy"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "cohen kappa"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "cohen kappa"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "f1"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "f1"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "fowlkes mallows"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "fowlkes mallows"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "jaccard"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "jaccard"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "matthews corrcoef"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "matthews corrcoef"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "precision"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "precision"@en, xsd:double(?value), -1)) < 0.8 &&
+
+    MAX(IF(?eval_measure_name = "recall"@en, xsd:double(?value), 1)) > 0.1 &&
+    MAX(IF(?eval_measure_name = "recall"@en, xsd:double(?value), -1)) < 0.8
+)
+
+# ORDER BY DESC(?accuracy) 
+# ORDER BY DESC(?accuracy)
+# ORDER BY ASC(?model)
+# ORDER BY DESC(?model)
+# ORDER BY ASC(?hyperparams)
+# ORDER BY DESC(?hyperparams)
+# ORDER BY ASC(?experiment)
+# ORDER BY DESC(?experiment)

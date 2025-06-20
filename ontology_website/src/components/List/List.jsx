@@ -37,36 +37,11 @@ const List = () => {
 
   const types = ['Regression', 'Classification', 'Images'];
 
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5000/search?filterText=${filterText}&sortField=${sortField}&sortOrder=${sortOrder}&selectedTypes=${selectedTypes.join(',')}&page=${currentPage}&limit=10`);
-  //     const result = await response.json();
-  //     console.log(result);
-  //     setData(result.datasets);
-  //     setTotalPages(result.totalPages); // Assuming the API returns total pages for pagination
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
 const fetchData = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/search', {
-      params: {
-        filterText: filterText,
-        sortField: sortField,
-        sortOrder: sortOrder,
-        selectedTypes: selectedTypes.join(','),
-        page: currentPage,
-        limit: 10
-      }
-    });
-    const result = response.data; // Axios response data is stored in the `data` field
-    console.log(result);
-    setData(result.datasets);
-    setTotalPages(result.totalPages); // Assuming the API returns total pages for pagination
+    const response = await axios.get('http://localhost:5000/search');
+    const result = response.data;
+    setData(result);
   } catch (error) {
     console.error("Error fetching data:", error);
   } finally {
@@ -106,7 +81,8 @@ useEffect(() => {
   };
 
   // msm deka ne ni treba veke
-  const filteredData = data.filter((item) => selectedTypes.length === 0 || selectedTypes.includes(item.type));
+  // const filteredData = data.filter((item) => selectedTypes.length === 0 || selectedTypes.includes(item.type));
+  const filteredData = data
 
 
   const handlePageChange = (event, value) => {
@@ -181,7 +157,7 @@ useEffect(() => {
       ) : (
         filteredData.length > 0 ? (
           filteredData.map((item) => (
-            <ListItem key={item.title} data={item}/>
+            <ListItem key={item.dataset} data={item}/>
           ))
         ) : (
           <div id='noResultsContainer'>

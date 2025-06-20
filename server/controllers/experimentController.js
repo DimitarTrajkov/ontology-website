@@ -1,3 +1,19 @@
+const { simplifyBindings } = require('../utils/sparqlUtils');
+const dictionary = {
+    "binary classification": {
+      uri : "OntoDM_208659",
+      sufix : "binary_classification"
+    },
+    "multi class classification": {
+      uri : "OntoDM_913132",
+      sufix : "multi_class_classification"
+    },
+    "regression": {
+      uri : "OntoDM_837886",
+      sufix : "regression"
+    }
+  }
+
 /**
  * @swagger
  * tags:
@@ -51,19 +67,36 @@ const getAvailableModelsNamesForDataset = async (req, res) => {
     const { dataset } = req.params;
     const client = req.virtuosoClient;  
     try {
+      // 2.2s
+      // const query = `
+      // SELECT DISTINCT ?model_name
+      // FROM <http://localhost:8890/test03>
+      // WHERE {
+      //     ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+
+      //     FILTER (
+      //         regex(?evaluationMeasure_label, "${dataset}")
+      //         && regex(?evaluationMeasure_label, "outter")
+      //     )
+
+      //     BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "${dataset}_"), "_") AS ?model_name)
+      // }
+      // 0.45s
       const query = `
-      SELECT DISTINCT ?model_name
-      FROM <http://localhost:8890/test03>
-      WHERE {
-          ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+        PREFIX bfo: <http://purl.obolibrary.org/obo/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-          FILTER (
-              regex(?evaluationMeasure_label, "${dataset}")
-              && regex(?evaluationMeasure_label, "outter")
-          )
-
-          BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "${dataset}_"), "_") AS ?model_name)
-      }
+        SELECT ?model_name
+        FROM <http://localhost:8890/D2>
+        WHERE {
+          ?ten_ncv_eval_wf a ontoexp:ontoexp_0005.
+          ?ten_ncv_eval_wf rdfs:label ?ten_ncv_eval_wf_label.
+          FILTER ( regex(?ten_ncv_eval_wf_label, "10_fold_nested_cross_validation_evaluation_workflow_execution"))
+          
+          BIND(STRBEFORE(STRAFTER(?ten_ncv_eval_wf_label, "${dataset}"), "_10_fold_nested_cross_validation_evaluation_workflow_execution") AS ?model_name)
+        }
       `;
   
       const results = await client.query(query).execute();
@@ -335,19 +368,66 @@ const getOneHyperParamNamesForDatasetAndModel = async (req, res) => {
     const { dataset, model } = req.params;
     const client = req.virtuosoClient;  
     try {
+      // 1.2s
+      // const query = `
+      //   SELECT DISTINCT ?param_string 
+      //   FROM <http://localhost:8890/test03>
+      //   WHERE {
+      //       ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+
+      //       FILTER (
+      //           regex(?evaluationMeasure_label, "${dataset}_${model}_")
+      //           && regex(?evaluationMeasure_label, "_outter_")
+      //       )
+
+      //       BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "${dataset}_${model}"), "_outter_") AS ?param_string)
+      //   }
+      // `;
+      // 0.4s  // can be improved by using limit of per_fold to 1 instead of choosing the 4th fold
+      // const query = `
+      // PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      // PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+      // PREFIX bfo: <http://purl.obolibrary.org/obo/>
+      // PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+      // SELECT ?text
+      // WHERE {
+      //   ?ten_ncv_eval_wf a ontoexp:ontoexp_0005.
+      //   ?ten_ncv_eval_wf rdfs:label "${dataset}_${model}_10_fold_nested_cross_validation_evaluation_workflow_execution".
+      //   ?ten_ncv_eval_wf bfo:BFO_0000051 ?per_fold.
+
+      //   ?per_fold rdfs:label ?"${dataset}_${model}_4_fold_evaluation_workflow_execution".
+      //   ?per_fold bfo:BFO_0000051 ?three_cv_eval_wf.
+      //   ?three_cv_eval_wf a ontoexp:ontoexp_0005.
+      //   ?three_cv_eval_wf bfo:BFO_0000051 ?val_calc.
+      //   ?val_calc ontoexp:ontoexp_0217 ?text.
+      //   }
+      // `;
+      // Stockport Local Health Characteristics_AdaBoost_Regression_10_fold_nested_cross_validation_evaluation_workflow_execution
       const query = `
-        SELECT DISTINCT ?param_string 
-        FROM <http://localhost:8890/test03>
-        WHERE {
-            ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+      PREFIX bfo: <http://purl.obolibrary.org/obo/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-            FILTER (
-                regex(?evaluationMeasure_label, "${dataset}_${model}_")
-                && regex(?evaluationMeasure_label, "_outter_")
-            )
-
-            BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "${dataset}_${model}"), "_outter_") AS ?param_string)
+      SELECT ?text
+      WHERE {
+        {
+          SELECT ?per_fold
+          WHERE {
+            ?ten_ncv_eval_wf a ontoexp:ontoexp_0005.
+            ?ten_ncv_eval_wf rdfs:label "${dataset}_${model}_10_fold_nested_cross_validation_evaluation_workflow_execution".
+            ?ten_ncv_eval_wf bfo:BFO_0000051 ?per_fold.
+            ?per_fold a ontoexp:ontoexp_0006.
+          }
+          LIMIT 1
         }
+
+        ?per_fold bfo:BFO_0000051 ?three_cv_eval_wf.
+        ?three_cv_eval_wf a ontoexp:ontoexp_0005.
+        ?three_cv_eval_wf bfo:BFO_0000051 ?val_calc.
+        ?val_calc ontoexp:ontoexp_0217 ?text.
+      }
       `;
 
       const results = await client.query(query).execute();
@@ -479,40 +559,191 @@ const getAvailableDatasetsNames_Filtered = async (req, res) => {
 };
 
 
-
-// filter it later by type, img/text and clf/reg
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// THIS QUERY IS HARD CODED FOR THE TEST DATA FIND BETTER WAY
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-const getAvailableModelsNames_Filtered = async (req, res) => {
-  const client = req.virtuosoClient;
-  try {
+ const getMetricByTaskType = async (req, res) => {
+    // dataset == Cerebral Stroke Prediction-Imbalanced Dataset
+    const {  type } = req.params; 
+    const client = req.virtuosoClient;  
+    try {
       const query = `
-          SELECT DISTINCT ?model
-          FROM <http://localhost:8890/test03>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+      PREFIX bfo: <http://purl.obolibrary.org/obo/>
+      PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      PREFIX schema: <https://schema.org/>
+
+      SELECT DISTINCT (STR(?metric) AS ?metric)
+      FROM <http://localhost:8890/dimitar_test01>
+      WHERE {
+        {
+          # get a one dataset for that specific type
+          SELECT ?dataset_name
           WHERE {
-              ?evaluationMeasure rdfs:label ?evaluationMeasure_label .
-
-              FILTER ( regex(?evaluationMeasure_label, "_test_predictive_modelling_evaluation_calculation_implementation") )
-
-              BIND(STRBEFORE(STRAFTER(?evaluationMeasure_label, "_"), "_outter") AS ?model_full)
-              BIND(STRBEFORE(STRAFTER(?model_full, "_"), "_") AS ?model)
+            ?binary_task a ontoexp:${dictionary[type].uri};
+                        rdfs:label ?task_label.
+            BIND(STRBEFORE(STR(?task_label), "_${dictionary[type].sufix}_task") AS ?dataset_name)
           }
-      `;
-      const results = await client.query(query).execute();
-      if (!results || !results.results || !results.results.bindings) {
-          console.error("Invalid SPARQL response:", results);
-          return res.status(500).json({ error: "Unexpected response from Virtuoso" });
+          LIMIT 1
+        }
+
+        ?pred_modelling_eval_calc_imp a ontoexp:ontoexp_0017;
+                                      rdfs:label ?pred_modelling_eval_calc_imp_label;
+                                      <http://purl.obolibrary.org/obo/OBI_0000294> ?metric_instance.
+
+        FILTER(REGEX(STR(?pred_modelling_eval_calc_imp_label), ?dataset_name))
+
+        ?metric_instance a ?metric_class.
+        ?metric_class rdfs:label ?metric.
       }
-      res.json(results.results.bindings);
+      `;
+      // console.log(query)
+   const results = await client.query(query).execute();
+    // sleep for 2s just for testinng
+    if (!results?.results?.bindings) {
+      return res.status(500).json({ error: "Unexpected response from Virtuoso" });
+    }
+
+    const simplified = simplifyBindings(results.results.bindings);
+    res.json(simplified);
   } catch (error) {
-      console.error("Error querying Virtuoso:", error);
-      res.status(500).json({ error: error.message });
+    console.error("Virtuoso error:", error);
+    res.status(500).json({ error: error.message });
   }
 };
+
+
+
+
+ const getAvailableModelsNames_Filtered = async (req, res) => {
+    // dataset == Cerebral Stroke Prediction-Imbalanced Dataset
+    const {  type } = req.params; 
+  
+    const client = req.virtuosoClient;  
+    try {
+      const query = `
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+        PREFIX bfo: <http://purl.obolibrary.org/obo/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+        PREFIX schema: <https://schema.org/>
+
+        SELECT DISTINCT ?models
+        FROM <http://localhost:8890/dimitar_test01>
+        WHERE {
+          {
+            # Get one dataset for that specific type
+            SELECT ?dataset_name
+            WHERE {
+              ?binary_task a ontoexp:${dictionary[type].uri};
+                          rdfs:label ?task_label.
+              BIND(STRBEFORE(STR(?task_label), "_${dictionary[type].sufix}_task") AS ?dataset_name)
+            }
+            LIMIT 1
+          }
+
+          ?pred_modelling_eval_calc_imp a ontoexp:ontoexp_0066;
+                                        rdfs:label ?pred_modelling_eval_calc_imp_label.
+          FILTER(REGEX(STR(?pred_modelling_eval_calc_imp_label), ?dataset_name))
+          
+          BIND(STRBEFORE(STRAFTER(?pred_modelling_eval_calc_imp_label, "_"), "_{") AS ?model)
+          BIND(REPLACE(?model, "_", " ") AS ?models)
+        }
+      `;
+      // console.log(query)
+   const results = await client.query(query).execute();
+    // sleep for 2s just for testinng
+    if (!results?.results?.bindings) {
+      return res.status(500).json({ error: "Unexpected response from Virtuoso" });
+    }
+
+    const simplified = simplifyBindings(results.results.bindings);
+    res.json(simplified);
+  } catch (error) {
+    console.error("Virtuoso error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+ const getAvailableExperimentForDataset = async(req, res) => {
+    // dataset == Cerebral Stroke Prediction-Imbalanced Dataset
+    const { dataset } = req.params; 
+    const metricList = JSON.parse(req.query.metricList);
+
+    const client = req.virtuosoClient;
+    const metricFields = metricList.map(metric => {
+      metric_without_space = metric.metricName.replace(" ","_")
+      return `(MAX(IF(?eval_measure_name = "${metric.metricName}"@en, xsd:double(?value), xsd:double("-1"))) AS ?${metric_without_space})`;}).join("\n"); 
+
+    const metricFiltersHaving = metricList.map(metric => {
+      return `
+              MAX(IF(?eval_measure_name = "${metric.metricName}"@en, xsd:double(?value), 1)) >= ${metric.from} &&
+              MAX(IF(?eval_measure_name = "${metric.metricName}"@en, xsd:double(?value), -1)) <=  ${metric.to}
+      `;}).join(" && "); 
+
+    try {
+      const query = `
+          PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+          PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+          PREFIX bfo: <http://purl.obolibrary.org/obo/>
+          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+          PREFIX schema: <https://schema.org/>
+
+          SELECT 
+              ?model ?hyperparams
+              ${metricFields}
+              #(GROUP_CONCAT(DISTINCT ?measure; separator=", ") AS ?measures)
+          FROM <http://localhost:8890/dimitar_test01>
+          WHERE {
+              # This subquery for pagination remains the same. It efficiently selects a page of experiments.
+              {
+                  SELECT DISTINCT ?per_fold {
+                      ?per_fold a ontoexp:ontoexp_0006;
+                                rdfs:label ?per_fold_labela.
+                      
+                      FILTER(STRSTARTS(STR(?per_fold_labela), "${dataset}"))
+
+                      BIND(STRBEFORE(STRAFTER(STR(?per_fold_labela), "${dataset}_"), "_10_fold_evaluation_workflow_execution") AS ?model)
+                  }
+                  ORDER BY ASC(?per_fold)
+                  LIMIT 5 
+                  OFFSET 0
+              }
+
+              ?per_fold bfo:BFO_0000051 ?inner_cv .
+              ?inner_cv bfo:BFO_0000051 ?n_fold_cv_eval_calc .
+              ?n_fold_cv_eval_calc <http://purl.obolibrary.org/obo/OBI_0000299> ?eval_measure;
+                                  rdfs:label ?labela .
+
+              ?eval_measure a ?eval_measure_class;
+                            <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value .
+              ?eval_measure_class rdfs:label ?eval_measure_name .
+
+              BIND(STRBEFORE(STRAFTER(STR(?labela), "${dataset}_"), "_3_fold_avg_test_evaluation_measure_calculation") AS ?experiment)
+              BIND(STRBEFORE(?experiment, "_{") AS ?model)
+              BIND(CONCAT("{", STRBEFORE(STRAFTER(?experiment, "_{"), "}_"), "}") AS ?hyperparams)
+          }
+          GROUP BY ?model ?hyperparams
+          HAVING (${metricFiltersHaving})
+      `;
+      // console.log(query)
+   const results = await client.query(query).execute();
+    // sleep for 2s just for testinng
+    if (!results?.results?.bindings) {
+      return res.status(500).json({ error: "Unexpected response from Virtuoso" });
+    }
+
+    const simplified = simplifyBindings(results.results.bindings);
+    res.json(simplified);
+  } catch (error) {
+    console.error("Virtuoso error:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
   module.exports = { getAvailableModelsNamesForDataset, getOneHyperParamNamesForDatasetAndModel,
      getAvailableHyperParamNamesForDatasetModelAndParam, getAvailableHyperParamNameValueCombForDatasetAnaModelCombinations,
-      getAvailableMetricNamesByDataset,getAvailableDatasetsNames_Filtered, getAvailableModelsNames_Filtered};
+      getAvailableMetricNamesByDataset,getAvailableDatasetsNames_Filtered, getAvailableModelsNames_Filtered, getMetricByTaskType, getAvailableExperimentForDataset}
   

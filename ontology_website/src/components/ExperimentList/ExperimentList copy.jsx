@@ -43,7 +43,8 @@ const ExperimentList = () => {
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => setOpenDialog(false);
 
-  const [taskType, setTaskType] = useState("binary classification");
+  const [dataType, setDataType] = useState("tabular");
+  const [taskType, setTaskType] = useState("binaryClassification");
 
   const handleMetricChange1 = (event) => {
     setSelectedMetric1(event.target.value);
@@ -294,12 +295,15 @@ const ExperimentList = () => {
       try {
         setLoading1(true);
         // const response = await axios.get( "http://localhost:5000/performance/metrics/dataset_5" );
-        const response = await axios.get( `http://localhost:5000/experiments/available_metrics_by_type/${taskType}` );
+        const response = await axios.get( "http://localhost:5000/performance/metrics/" );
         const result = response.data; 
-        // transorm the data to the format name, from, to
-        const transformedData = result.map((item) => {return { metricName: item, from: 0, to: 1 };});
 
+        // transorm the data to the format name, from, to
+        const transformedData = result.map((item) => {
+          return { metricName: item.metrics.value, from: 0, to: 1 };
+        });
         setMetricRange(transformedData);
+
         // save the metric names only
         const metrics_Names_Only = result.map((item) => item.metrics.value);
         setMetrics(metrics_Names_Only);
@@ -314,11 +318,14 @@ const ExperimentList = () => {
 
       try {
         setLoading2(true);
-        const response = await axios.get(`http://localhost:5000/experiments/available_models_filtered/${taskType}`);
+        const response = await axios.get(
+          "http://localhost:5000/table/all_models_filtered"
+        );
         const result = response.data; 
-        console.log("all_models_filtered", result)
-        setModels(result);
-        setSelectedModel(result[0]);
+
+        const transformedData = result.map((item) => item.model.value);
+        setModels(transformedData);
+        setSelectedModel(transformedData[0]);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -326,7 +333,7 @@ const ExperimentList = () => {
       }
     };
     fetchData();
-  }, [taskType]);
+  }, []);
 
   useEffect(() => {
     if (!metricRange) return;
@@ -448,8 +455,12 @@ const ExperimentList = () => {
                 MenuProps={{ disableScrollLock: true }}
               >
                 <MenuItem value="regression">Regression</MenuItem>
-                <MenuItem value="multi class classification">Multi-Class Classification</MenuItem>
-                <MenuItem value="binary classification">Binary Classification</MenuItem>
+                <MenuItem value="multiClassClassification">
+                  Multi-Class Classification
+                </MenuItem>
+                <MenuItem value="binaryClassification">
+                  Binary Classification
+                </MenuItem>
               </Select>
             </FormControl>
 

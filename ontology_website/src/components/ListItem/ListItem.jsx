@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import { useNavigate } from 'react-router-dom'; 
 
 const ListItem = (props) => {
-  const { title, publisher, date, type, subtype } = props.data;
+  const { dataset, publishers,creators, date, type } = props.data;
   const navigate = useNavigate();
 
   const handleDatasetClick = (item) => {
@@ -11,17 +11,26 @@ const ListItem = (props) => {
     navigate(`/info/${encodedTitle}`);
   };
 
+
+  const formatDate = (isoDate) => {
+    if (!isoDate) return "";
+    const d = new Date(isoDate);
+    const monthName = d.toLocaleString('default', { month: 'long' }); // e.g., "September"
+    const year = d.getFullYear();
+    return `${monthName}-${year}`;
+  };
+
   return (
-    <div id="ItemContainer" onClick={() => {handleDatasetClick(title)}}>
+    <div id="ItemContainer" onClick={() => {handleDatasetClick(dataset)}}>
       <div id="ItemTitle">
-        <h2>{title}</h2>
+        <h2>{dataset}</h2>
       </div>
 
       <div id="ItemInfo">
-        {publisher && <p>{publisher}</p>}
-        {date && <p>{date}</p>}
+        {publishers && <p>{publishers}</p>}
+        {date && <p>{formatDate(date)}</p>}
         <p>{type}</p>
-        {subtype && <p>{subtype}</p>}
+        {/* {subtype && <p>{subtype}</p>} */}
       </div>
     </div>
   );

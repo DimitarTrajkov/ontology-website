@@ -1,4 +1,4 @@
-const GRAPH_NAME = "<http://localhost:8890/big_test>";  // Global variable
+const GRAPH_NAME = "<http://localhost:8890/dimitar_test01>";  // Global variable
  
 const getOutterPerformanceByDataset = async (req, res) => {
     const { dataset } = req.params;
@@ -186,7 +186,7 @@ const getInnerTestAveragePerformanceForAllExperiments_FilteredByMetricRange = as
             HAVING (COUNT(?metric) = ${metricList.length})
             LIMIT 10000
         `;
-        // console.log(query)
+        console.log(query)
         const results = await client.query(query).execute();
         if (!results || !results.results || !results.results.bindings) {
             console.error("Invalid SPARQL response:", results);

@@ -108,7 +108,7 @@ const getFilteredExperiments = async (req, res) => {
         FILTER(?count = ${metricList.length}) 
     }
   `;
-  // console.log(query)
+  console.log(query)
   try {
     const results = await client.query(query).execute();
 

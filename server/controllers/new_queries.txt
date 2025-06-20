@@ -1,0 +1,174 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX bfo: <http://purl.obolibrary.org/obo/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT (xsd:double(?value_inner) AS ?value_double) (STR(?metric_class_label) AS ?label)
+WHERE {
+    ?ten_ncv_eval_wf a ontoexp:ontoexp_0005.
+    ?ten_ncv_eval_wf rdfs:label "Stockport Local Health Characteristics_AdaBoost_Regression_10_fold_nested_cross_validation_evaluation_workflow_execution".
+    ?ten_ncv_eval_wf bfo:BFO_0000051 ?per_fold.
+    ?per_fold bfo:BFO_0000051 ?three_cv_eval_wf.
+    ?per_fold a ontoexp:ontoexp_0006.
+    ?three_cv_eval_wf a ontoexp:ontoexp_0005.
+    ?three_cv_eval_wf bfo:BFO_0000051 ?val_calc.
+    ?val_calc a ontoexp:ontoexp_0062.
+    ?val_calc bfo:OBI_0000299 ?metric.
+    ?metric a ?metric_class.
+    ?metric_class rdfs:label ?metric_class_label.
+    FILTER (STR(?metric_class_label) = "R-squared")
+    ?metric <http://www.ontodm.com/OntoDT#OntoDT_0000240> ?value_inner.
+}
+    
+N f cv eval wf exec:        ontoexp:ontoexp_0005
+Per f eval wf exec:         ontoexp:ontoexp_0006
+N f cv eval calc exec:      ontoexp:ontoexp_0062
+CV tr te d asg:             ontoexp:ontoexp_0068
+pred m tr te eval wf exec:  ontoexp:ontoexp_0008
+pred m te set eval calc:    ontoexp:ontoexp_0064
+eval measure calc:          ontoexp:ontoexp_0061
+pred_m-ing_eval_calc_imp:   ontoexp:ontoexp_0017.
+DM dataset                  ontoexp:OntoDM_000144.
+sampling_tech  <http://scai.fraunhofer.de/HuPSON#SCAIVPH_00000220>
+
+supervised regression task                   ontoexp:OntoDM_837886.
+supervised binary classification task        ontoexp:OntoDM_208659.
+supervised multi-class classification task   ontoexp:OntoDM_913132.
+
+has part: bfo:BFO_0000051
+has specified output: bfo:OBI_0000299
+has specified input: bfo:OBI_0000293
+has value: <http://www.ontodm.com/OntoDT#OntoDT_0000240>
+procedes: <http://www.obofoundry.org/ro/ro.owl#precedes>
+realizes: bfo:OBI_0000308
+is concretization of: bfo:OBI_0000294
+with parameters: ontoexp:ontoexp_0203
+evaluated hyper-parameters: ontoexp:ontoexp_0217
+has member <http://semanticscience.org/resource/SIO_000059>
+is about <http://purl.obolibrary.org/obo/IAO_0000136>
+description         schema:description
+encodingFormat      schema:encodingFormat
+license             schema:license
+publisher           schema:publisher
+creator             schema:creator
+identifier          schema:identifier
+has quality         <http://purl.obolibrary.org/obo/OBI_0000298>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX bfo: <http://purl.obolibrary.org/obo/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <https://schema.org/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT ?dataset ?date 
+       (GROUP_CONCAT(DISTINCT ?publisher; separator=", ") AS ?publishers)
+       (GROUP_CONCAT(DISTINCT ?creator; separator=", ") AS ?creators)
+FROM <http://localhost:8890/dimitar_test01>
+WHERE {
+
+
+    ?datasets_class a ontoexp:OntoDM_000144;
+                    rdfs:label ?dataset;
+                    schema:publisher ?publisher_class;
+                    schema:creator ?creator_class;
+                    schema:dateCreated ?date.
+
+    ?publisher_class rdfs:label ?publisher.
+    ?creator_class rdfs:label ?creator.
+}
+GROUP BY ?dataset ?date
+
+
+
+
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ontoexp: <http://www.ontodm.com/OntoDM-core/>
+PREFIX bfo: <http://purl.obolibrary.org/obo/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX schema: <https://schema.org/>
+
+SELECT ?dataset ?type ?date
+       (GROUP_CONCAT(DISTINCT COALESCE(?publisher, ""); separator=", ") AS ?publishers)
+       (GROUP_CONCAT(DISTINCT ?creator; separator=", ") AS ?creators)
+FROM <http://localhost:8890/dimitar_test01>
+WHERE {
+  {
+    ?regression_task a ontoexp:OntoDM_837886;
+                     <http://semanticscience.org/resource/SIO_000059> ?spec.
+    ?spec <http://purl.obolibrary.org/obo/IAO_0000136> ?dataset_class.
+    BIND("regression" AS ?type)
+  }
+  UNION
+  {
+    ?binary_task a ontoexp:OntoDM_208659;
+                 <http://semanticscience.org/resource/SIO_000059> ?spec.
+    ?spec <http://purl.obolibrary.org/obo/IAO_0000136> ?dataset_class.
+    BIND("binary_classification" AS ?type)
+  }
+  UNION
+  {
+    ?multi_task a ontoexp:OntoDM_913132;
+                <http://semanticscience.org/resource/SIO_000059> ?spec.
+    ?spec <http://purl.obolibrary.org/obo/IAO_0000136> ?dataset_class.
+    BIND("multiclass_classification" AS ?type)
+  }
+
+  # Required metadata
+  ?dataset_class a ontoexp:OntoDM_000144;
+                 rdfs:label ?dataset;
+                 schema:dateCreated ?date.
+
+  # Optional publisher
+  OPTIONAL {
+    ?dataset_class schema:publisher ?publisher_class.
+    ?publisher_class rdfs:label ?publisher.
+    ?dataset_class schema:publisher ?creator_class.
+    ?creator_class rdfs:label ?creator.
+  }
+}
+GROUP BY ?dataset ?date ?type
